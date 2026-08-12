@@ -93,6 +93,99 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
 .choice:active{background:var(--edge)}
 .choice small{display:block;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:3px}
 
+/* ---- table explorer ---- */
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.toolbar .chip{padding:9px 12px;font-size:12px}
+#psearch{
+  width:100%;font-size:16px;font-family:var(--body);padding:13px 14px;border-radius:var(--r);
+  background:var(--panel2);border:1px solid var(--edge);color:var(--paper);margin-bottom:10px;
+  -webkit-user-select:text;user-select:text;
+}
+#psearch:focus{outline:none;border-color:var(--accent)}
+.ptwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+.ptable{display:grid;gap:2px;width:max-content}
+.ptable.fit{--cell:calc((100vw - 40px - 34px) / 18);width:100%}
+.ptable.large{--cell:44px}
+.ptable{grid-template-columns:repeat(18,var(--cell))}
+.cell{
+  aspect-ratio:1;border:none;padding:0;border-radius:1.5px;background:transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
+}
+.cell.blank{background:transparent}
+.cell.live{
+  background:color-mix(in srgb, var(--cat) 16%, var(--panel));
+  border:1px solid color-mix(in srgb, var(--cat) 42%, transparent);
+  color:var(--paper);cursor:pointer;
+}
+.cell.live:active{background:color-mix(in srgb, var(--cat) 34%, var(--panel))}
+.cell.live b{font-family:var(--display);font-weight:600;color:var(--cat);line-height:1}
+.cell.live i{font-family:var(--mono);font-style:normal;color:var(--dim);line-height:1}
+.ptable.fit .cell.live i{display:none}
+.ptable.fit .cell.live b{font-size:calc(var(--cell) * .55)}
+.ptable.large .cell.live i{font-size:9px;margin-bottom:2px}
+.ptable.large .cell.live b{font-size:17px}
+.cell.marker{
+  border:1px dashed var(--edge);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);color:var(--dim);
+}
+.ptable.fit .cell.marker span{font-size:6px}
+.ptable.large .cell.marker span{font-size:9px}
+.cell.hot{box-shadow:inset 0 0 0 999px rgba(255,107,107,var(--heat,.3))}
+.cell.clean{box-shadow:inset 0 0 0 999px rgba(79,224,166,.14)}
+.legend{display:flex;flex-wrap:wrap;gap:7px 12px;margin-top:14px}
+.key{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);display:flex;align-items:center;gap:5px}
+.key i{width:8px;height:8px;border-radius:1px;display:inline-block}
+.hint{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.1em;margin-top:12px;line-height:1.6}
+
+/* ---- list view ---- */
+#listWrap{flex:1;overflow-y:auto}
+.lhead{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cat);margin:16px 0 7px;display:flex;justify-content:space-between;
+}
+.lhead span{color:var(--dim)}
+.lrow{
+  width:100%;display:flex;align-items:center;gap:11px;padding:11px 12px;margin-bottom:5px;
+  background:var(--panel);border:1px solid var(--edge);border-left:2px solid var(--cat);
+  border-radius:var(--r);color:var(--paper);text-align:left;cursor:pointer;
+}
+.lrow:active{background:var(--panel2)}
+.lrow i{font-family:var(--mono);font-style:normal;font-size:11px;color:var(--dim);min-width:26px}
+.lrow b{font-family:var(--display);font-size:21px;font-weight:600;color:var(--cat);min-width:34px}
+.lrow span{flex:1;font-size:14px}
+.lrow span u{display:block;text-decoration:none;font-family:var(--mono);font-size:10px;color:var(--flare);margin-top:2px}
+.lrow em{font-family:var(--mono);font-style:normal;font-size:11px;color:var(--dim)}
+.nores{color:var(--dim);font-size:13px;padding:24px 0;text-align:center;line-height:1.5}
+
+/* ---- detail sheet ---- */
+#scrim{position:fixed;inset:0;background:rgba(5,7,14,.72);opacity:0;pointer-events:none;transition:opacity .2s;z-index:8}
+#scrim.on{opacity:1;pointer-events:auto}
+#sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--panel);
+  border-top:1px solid var(--edge);border-radius:10px 10px 0 0;
+  padding:20px var(--pad) calc(env(safe-area-inset-bottom) + 20px);
+  max-width:560px;margin:0 auto;transform:translateY(105%);transition:transform .25s ease;
+  max-height:88dvh;overflow-y:auto;
+}
+#sheet.on{transform:translateY(0)}
+.shead{display:flex;gap:15px;align-items:center;margin-bottom:14px}
+.stile{
+  min-width:82px;padding:11px 6px;border-radius:var(--r);text-align:center;
+  background:color-mix(in srgb, var(--cat) 16%, var(--panel2));
+  border:1px solid color-mix(in srgb, var(--cat) 45%, transparent);
+}
+.stile i{display:block;font-family:var(--mono);font-style:normal;font-size:10px;color:var(--dim)}
+.stile b{display:block;font-family:var(--display);font-size:38px;font-weight:600;color:var(--cat);line-height:1.05}
+.stile u{display:block;text-decoration:none;font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-top:2px}
+.stitle h2{font-family:var(--display);font-size:34px;font-weight:600;margin:0;line-height:1}
+.stitle p{margin:5px 0 0;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.suse{font-size:14px;line-height:1.5;color:var(--paper);margin:0 0 16px}
+.dtable{border-top:1px solid var(--edge);margin-bottom:16px}
+.drow{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--edge)}
+.drow span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+.drow b{font-family:var(--mono);font-size:12.5px;font-weight:500;text-align:right}
+.snote{font-family:var(--mono);font-size:10px;color:var(--dim);line-height:1.6;margin:0 0 14px}
+
 /* ---- results ---- */
 .final{font-family:var(--display);font-size:88px;line-height:.9;font-weight:600;color:var(--accent);margin:6px 0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
@@ -148,6 +241,35 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
     </div>
 
     <button class="btn" id="btnStart" style="margin-top:auto">Start drill</button>
+    <button class="btn ghost" id="btnTable" style="margin-top:9px">Browse the table</button>
+  </section>
+
+  <!-- ============ TABLE EXPLORER ============ -->
+  <section class="screen" id="s-table">
+    <a class="back" href="#" id="btnTableBack">&larr; Back to the drill</a>
+
+    <input type="text" id="psearch" placeholder="Search name, symbol, or number&hellip;"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+
+    <div class="toolbar">
+      <button class="chip sel" data-layout="grid">Table</button>
+      <button class="chip" data-layout="list">List</button>
+      <span style="flex:1"></span>
+      <button class="chip" id="btnHeat">Weak spots</button>
+    </div>
+
+    <div class="toolbar" id="zoomRow">
+      <button class="chip sel" data-zoom="fit">Fit screen</button>
+      <button class="chip" data-zoom="large">Zoom in</button>
+    </div>
+
+    <div id="gridWrap">
+      <div class="ptwrap"><div class="ptable fit" id="ptable"></div></div>
+      <div class="legend" id="legend"></div>
+      <p class="hint">TAP ANY ELEMENT FOR DETAIL. ZOOM IN, THEN SCROLL SIDEWAYS TO READ THE WHOLE TABLE.</p>
+    </div>
+
+    <div id="listWrap" style="display:none"><div id="plist"></div></div>
   </section>
 
   <!-- ============ PLAY ============ -->
@@ -185,8 +307,13 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
 
 </div>
 
+<div id="scrim"></div>
+<div id="sheet"></div>
+
 <script src="../shared/store.js"></script>
+<script src="elements.js"></script>
 <script src="config.js"></script>
+<script src="table.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
