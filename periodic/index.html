@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Spectra">
+<meta name="theme-color" content="#0A0D16">
+<title>Spectra — element drill</title>
+<link rel="stylesheet" href="../shared/tokens.css">
+<style>
+/* ---- spectral bar: the signature element ---- */
+.spectrum{
+  position:relative;height:26px;border-radius:var(--r);background:#05070E;
+  border:1px solid var(--edge);overflow:hidden;flex:none;
+}
+.spectrum .line{
+  position:absolute;top:0;bottom:0;width:2px;opacity:0;
+  transform:scaleY(.3);transition:opacity .25s ease,transform .25s ease;
+}
+.spectrum .line.lit{opacity:1;transform:scaleY(1)}
+.spectrum.hot{box-shadow:inset 0 0 22px rgba(255,194,75,.35)}
+
+.screen{display:none;flex:1;flex-direction:column}
+.screen.on{display:flex}
+.back{
+  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none;margin-bottom:12px;
+}
+
+/* ---- setup ---- */
+.block{margin-bottom:20px}
+.block > .eyebrow{display:block;margin-bottom:9px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font-family:var(--mono);font-size:13px;padding:10px 13px;border-radius:2px;
+  background:var(--panel);border:1px solid var(--edge);color:var(--dim);cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#1A1300;font-weight:600}
+.rangerow{display:flex;align-items:baseline;gap:10px;margin-top:14px}
+.rangenum{font-family:var(--display);font-size:38px;line-height:1;color:var(--accent);font-weight:600;min-width:74px}
+.rangenum small{font-family:var(--mono);font-size:11px;color:var(--dim);display:block;letter-spacing:.14em}
+input[type=range]{flex:1;accent-color:var(--accent);height:30px}
+
+/* ---- HUD ---- */
+.hud{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
+.stat{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.12em}
+.stat b{display:block;font-family:var(--display);font-size:28px;color:var(--paper);letter-spacing:0;font-weight:600;line-height:1}
+.mult, .mult b{color:var(--accent)}
+.lives{display:flex;gap:6px;justify-content:flex-end;margin-bottom:5px}
+.e{width:9px;height:9px;border-radius:50%;background:var(--phos);box-shadow:0 0 8px rgba(79,224,166,.7)}
+.e.gone{background:transparent;border:1px solid var(--edge);box-shadow:none}
+
+/* ---- card ---- */
+.card{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:18px 0;background:var(--panel);border:1px solid var(--edge);border-radius:var(--r);
+  padding:24px 18px;text-align:center;position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--edge)}
+.card.right::before{background:var(--phos)}
+.card.wrong::before{background:var(--flare)}
+.ask{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:18px}
+.znum{font-family:var(--display);font-size:104px;line-height:.85;font-weight:600;letter-spacing:-.02em}
+.sym{font-family:var(--display);font-size:88px;line-height:.9;font-weight:600}
+.nm{font-family:var(--display);font-size:32px;font-weight:500;margin-top:6px}
+.cat{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:12px}
+.verdict{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px}
+.verdict.right{color:var(--phos)}
+.verdict.wrong{color:var(--flare)}
+.gain{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:14px;min-height:16px}
+
+/* ---- answering ---- */
+.answer{flex:none}
+.typerow{display:flex;gap:8px}
+input[type=text]{
+  flex:1;font-size:17px;font-family:var(--body);padding:15px 14px;border-radius:var(--r);
+  background:var(--panel2);border:1px solid var(--edge);color:var(--paper);
+  -webkit-user-select:text;user-select:text;min-width:0;
+}
+input[type=text]:focus{outline:none;border-color:var(--accent)}
+.go{
+  padding:0 22px;border:none;border-radius:var(--r);background:var(--accent);color:#1A1300;
+  font-family:var(--display);font-size:18px;font-weight:600;cursor:pointer;
+}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice{
+  padding:16px 8px;border-radius:var(--r);background:var(--panel2);border:1px solid var(--edge);
+  color:var(--paper);font-family:var(--display);font-size:20px;font-weight:500;cursor:pointer;
+}
+.choice:active{background:var(--edge)}
+.choice small{display:block;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:3px}
+
+/* ---- results ---- */
+.final{font-family:var(--display);font-size:88px;line-height:.9;font-weight:600;color:var(--accent);margin:6px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.tile{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r);padding:13px}
+.tile .eyebrow{display:block;margin-bottom:4px}
+.tile b{font-family:var(--display);font-size:26px;font-weight:600}
+.xpline{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.12em;margin-bottom:14px}
+.badges{display:flex;flex-direction:column;gap:7px;margin-top:6px;overflow-y:auto}
+.badge{display:flex;gap:11px;align-items:center;padding:11px 12px;border-radius:var(--r);background:var(--panel);border:1px solid var(--edge)}
+.badge.locked{opacity:.34}
+.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.badge.locked .dot{background:var(--dim)}
+.badge .txt{font-size:13px;line-height:1.3}
+.badge .txt small{display:block;color:var(--dim);font-size:11px;font-family:var(--mono);margin-top:2px}
+.badge.fresh{border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ SETUP ============ -->
+  <section class="screen on" id="s-setup">
+    <a class="back" href="../">&larr; Study tools</a>
+    <div class="spectrum" id="sp-setup"></div>
+    <h1>Spec<span class="hl">tra</span></h1>
+    <p class="sub">Element drill. Three electrons, one chain reaction. Miss three and the run ends.</p>
+
+    <div class="level"><div class="lv">1<small>LEVEL</small></div><div class="meter"><i></i></div></div>
+    <div class="xpnote"></div>
+
+    <div class="block" style="margin-top:20px">
+      <span class="eyebrow">How far up the table?</span>
+      <div class="chips" id="presets"></div>
+      <div class="rangerow">
+        <div class="rangenum"><span id="maxOut">36</span><small>ELEMENTS</small></div>
+        <input type="range" id="maxZ" min="10" max="118" value="36" step="1">
+      </div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">What gets asked</span>
+      <div class="chips" id="dirs"></div>
+    </div>
+
+    <div class="block">
+      <span class="eyebrow">How you answer</span>
+      <div class="chips" id="modes"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="tile"><span class="eyebrow">Best score</span><b id="bestOut">0</b></div>
+      <div class="tile"><span class="eyebrow">Badges</span><b id="badgeOut">0/6</b></div>
+    </div>
+
+    <button class="btn" id="btnStart" style="margin-top:auto">Start drill</button>
+  </section>
+
+  <!-- ============ PLAY ============ -->
+  <section class="screen" id="s-play">
+    <div class="hud">
+      <div class="stat">SCORE<b id="scoreOut">0</b></div>
+      <div class="stat mult">MULTIPLIER<b id="multOut">1&times;</b></div>
+      <div>
+        <div class="lives" id="lives"></div>
+        <div class="stat" style="text-align:right">STREAK <span id="streakOut">0</span></div>
+      </div>
+    </div>
+    <div class="spectrum" id="sp-play"></div>
+    <div class="card" id="card"></div>
+    <div class="answer" id="answer"></div>
+    <button class="btn quiet" id="btnQuit">End run &amp; bank score</button>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="s-over">
+    <div class="spectrum" id="sp-over"></div>
+    <span class="eyebrow" style="margin-top:16px;display:block" id="overWhy">Out of electrons</span>
+    <div class="final" id="finalOut">0</div>
+    <div class="xpline" id="xpOut"></div>
+    <div class="grid2">
+      <div class="tile"><span class="eyebrow">Correct</span><b id="corrOut">0</b></div>
+      <div class="tile"><span class="eyebrow">Best streak</span><b id="bstrOut">0</b></div>
+    </div>
+    <span class="eyebrow">Badges</span>
+    <div class="badges" id="badgeList"></div>
+    <button class="btn" id="btnAgain" style="margin-top:16px">Run it again</button>
+    <button class="btn quiet" id="btnBack">Change settings</button>
+    <a class="back" href="../" style="text-align:center;display:block;margin:4px 0 0">&larr; Study tools</a>
+  </section>
+
+</div>
+
+<script src="../shared/store.js"></script>
+<script src="config.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
