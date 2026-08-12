@@ -214,7 +214,19 @@
 
   function win(id) { if (scope.award(id)) G.fresh.push(id); }
 
+  /** Per-element accuracy, used by the table explorer's heat map. */
+  function recordAttempt(z, ok) {
+    var st = scope.get("stats", {});
+    var k = String(z);
+    var r = st[k] || { seen: 0, miss: 0 };
+    r.seen += 1;
+    if (!ok) r.miss += 1;
+    st[k] = r;
+    scope.set("stats", st);
+  }
+
   function reveal(ok, e) {
+    recordAttempt(e.z, ok);
     var c = $("#card");
     c.className = "card " + (ok ? "right" : "wrong");
     c.innerHTML = "";
@@ -290,6 +302,8 @@
   refreshSetup();
 
   $("#btnStart").onclick = startGame;
+  $("#btnTable").onclick = function () { window.SpectraTable.open(); };
+  $("#btnTableBack").onclick = function () { show("#s-setup"); refreshSetup(); };
   $("#btnAgain").onclick = startGame;
   $("#btnBack").onclick = function () { show("#s-setup"); };
   $("#btnQuit").onclick = function () { if (G) gameOver("Run banked"); };
