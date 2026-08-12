@@ -1,0 +1,15 @@
+{
+  "apps": [
+    {
+      "id": "periodic",
+      "name": "Spectra",
+      "subject": "Periodic table",
+      "tagline": "Atomic numbers and element names, three electrons per run.",
+      "path": "periodic/",
+      "glyph": "Og",
+      "accent": "#FFC24B",
+      "badges": 6,
+      "live": true
+    }
+  ]
+}

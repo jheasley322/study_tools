@@ -1,0 +1,10 @@
+{
+  "name": "Study Tools",
+  "short_name": "Study",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0D16",
+  "theme_color": "#0A0D16"
+}
