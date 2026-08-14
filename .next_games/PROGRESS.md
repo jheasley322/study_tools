@@ -144,13 +144,21 @@ semantic. That is the argument for `chem-verifier` being a separate read-only ag
   `chem-verifier` at Gate 1. Same shape as the `derivable` boundary in §10: the
   compiler proves the two files do not contradict each other, never that the content
   is correct.
-- `drag.js` prune fix — `prune()` filters `owned`/`marks` by `isConnected`, keeping the
-  parallel arrays aligned. Fixes an unbounded detached-node leak **and** O(n²)
-  `indexOf` cost that would have presented as "the game gets choppy near the end of a
-  run" — Cascade spawns a tile every ~2s.
-  **Caveat: `engine-drag` never sent its task #4 report.** The code is present and
-  reads correctly, but the requested before/after array-length measurement was never
-  produced, and no one has exercised `drag.js` in a browser. Treat it as unproven.
+- `drag.js` prune fix — **measured, not asserted.** 500 spawn/retire cycles with 10
+  tiles live: `owned.length` 501 → 11, detached nodes retained 490 → 0. At n=5000 the
+  old code costs ~18× the time for 10× the cycles (superlinear, as predicted) and the
+  new code ~5.7×. Honest wrinkle reported by its author: at n=500 the fix is *slower*
+  (3.1ms → 5.7ms) because the O(n²) has not bitten yet — the leak, not the CPU, is why
+  it ships.
+- `drag.js` **has now run in a browser** (desktop Chrome): a 44-assertion harness,
+  44/44 passing with 0 leftover ghosts, plus an interactive board driven with real
+  browser-generated input. Verified there: capture lands on `rootEl` not the tile, all
+  three commit paths (`drag`/`tap`/`key`), `pointercancel` mid-drag leaving
+  `ghostsAfterCancel=0`, a *throwing* `onCancel` still not stranding a ghost,
+  `lostpointercapture`, `destroy()` mid-drag, second finger ignored, the post-drag
+  click swallowed exactly once without over-swallowing.
+  Its author reached green through three wrong expectations **of its own harness**,
+  corrected in the harness and never in `drag.js` — which is the right direction.
 
 **Deferred deliberately**
 - Absent polyatomics flagged advisory by the auditor: thiosulfate, bromate, iodate,
@@ -162,7 +170,21 @@ semantic. That is the argument for `chem-verifier` being a separate read-only ag
   prevents, and only on the deployed Pages URL. A `console.warn` on non-match was
   deferred to the mobile audit.
 - Nothing has run on a real iPhone. `CLAUDE.md` is explicit that desktop responsive
-  mode does not count. Phase 3 gate item.
+  mode does not count. Phase 3 gate item. Specifically untested on glass, per
+  `drag.js`'s author: Safari's scroll-versus-gesture arbitration (the entire reason
+  `touch-action` lives in CSS), `-webkit-touch-callout` suppressing the long-press
+  callout (Chrome does not implement the property at all), a real `pointercancel` from
+  a notification banner, whether iOS emits the post-drag synthetic click at all (the
+  400ms un-swallow timer exists for the case where it does not), `prefers-reduced-
+  motion` as rendered, and VoiceOver on `aria-grabbed`.
+- **Known limitation, inherent to the prune fix:** a pooled node re-inserted *without*
+  being reset keeps its attributes, so the second `stamp()` records "not mine to
+  remove" and `destroy()` leaves `tabindex`/`data-drag`/`role` on it. Closing this
+  would require retaining the pruned node — which is the leak. Cosmetic, post-teardown,
+  on a node the game already owns.
+- Test infrastructure note for whoever runs a browser next: the Bash sandbox isolates
+  localhost, so Chrome gets `ERR_CONNECTION_REFUSED` on `localhost:PORT`. Serve and
+  load via the LAN IP instead. Headless `--dump-dom` hangs under the sandbox.
 
 ---
 
@@ -172,11 +194,9 @@ semantic. That is the argument for `chem-verifier` being a separate read-only ag
    `python3 build_banks.py tests/fixtures/bad_bank.yaml` (expect exit 1) to confirm
    nothing rotted, then go straight to Phase 1. No further chemistry audit is owed at
    this gate.
-2. `drag.js` has **never run in a browser.** Before or alongside the Cascade build,
-   exercise it on a served page at 390px: all three commit paths (drag, tap, keyboard),
-   `pointercancel` mid-drag leaving no orphan ghost, and the prune actually bounding
-   `owned`/`marks` across ~500 spawn/remove cycles. It is the least-verified file in
-   the repo and the whole game sits on it.
+2. Reconcile `[data-drag]` vs `[data-draggable]` before the Gate 1 mobile audit, or
+   the audit reads as a false FAIL. `CONTRACT.md` §4 is authoritative and the code is
+   built to it; `mobile-auditor.md`'s checklist has the other spelling.
 3. Then dispatch Phase 1 as one parallel batch: `chem-ion-charges.yaml` (bank-author)
    and the Cascade engine (engine-builder), per `CONTRACT.md` §9.
 

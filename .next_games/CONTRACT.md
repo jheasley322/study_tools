@@ -136,13 +136,24 @@ var handle = Drag.attach(rootEl, {
   threshold: 8,                    // px of movement before a tap becomes a drag
   ghost: function (item) { ... },  // optional; default = styled clone
   onLift:   function (item) {},
-  onOver:   function (item, zone /* or null */) {},
+  onOver:   function (item, zone) {},          // zone is null when over nothing
   onCommit: function (item, zone, method) {},  // method: "drag" | "tap" | "key"
   onCancel: function (item) {}
 });
 handle.destroy();
 handle.refresh();   // re-scan items/zones after DOM changes
 ```
+
+Two behaviours engine authors must know, because neither is guessable:
+
+- `onLift` and `onCancel` fire for **tap and keyboard selection exactly as for a
+  drag**. A game implements one set of feedback, not two.
+- `onCommit` is a **notification only**. `drag.js` never moves an item into a zone —
+  two games want different placements from the same gesture.
+
+**The attribute is `[data-drag]`, not `[data-draggable]`.** `mobile-auditor.md`'s
+checklist says `[data-draggable]`; this contract is authoritative and the code is built
+to it. Reconcile the wording or the Gate 1 audit reads as a false FAIL.
 
 Required behaviour — `mobile-auditor` checks every line of this:
 
