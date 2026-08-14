@@ -1,0 +1,9 @@
+{
+  "name": "study-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static study games. This manifest exists for the dev-time test runner only — nothing here ships.",
+  "scripts": {
+    "test": "node tests/run.js"
+  }
+}

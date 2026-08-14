@@ -1,0 +1,557 @@
+{
+  "meta": {
+    "id": "ions",
+    "title": "Ion reference",
+    "subject": "Chemistry",
+    "grade": 10,
+    "standard": "C-PS1-1",
+    "engine": "reference",
+    "difficulty": 2
+  },
+  "config": {
+    "display": {}
+  },
+  "monatomic": [
+    {
+      "sym": "H",
+      "name": "hydrogen",
+      "poly": false,
+      "z": 1,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "Li",
+      "name": "lithium",
+      "poly": false,
+      "z": 3,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "Na",
+      "name": "sodium",
+      "poly": false,
+      "z": 11,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "K",
+      "name": "potassium",
+      "poly": false,
+      "z": 19,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "Rb",
+      "name": "rubidium",
+      "poly": false,
+      "z": 37,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "Cs",
+      "name": "cesium",
+      "poly": false,
+      "z": 55,
+      "group": 1,
+      "charge": 1
+    },
+    {
+      "sym": "Be",
+      "name": "beryllium",
+      "poly": false,
+      "z": 4,
+      "group": 2,
+      "charge": 2
+    },
+    {
+      "sym": "Mg",
+      "name": "magnesium",
+      "poly": false,
+      "z": 12,
+      "group": 2,
+      "charge": 2
+    },
+    {
+      "sym": "Ca",
+      "name": "calcium",
+      "poly": false,
+      "z": 20,
+      "group": 2,
+      "charge": 2
+    },
+    {
+      "sym": "Sr",
+      "name": "strontium",
+      "poly": false,
+      "z": 38,
+      "group": 2,
+      "charge": 2
+    },
+    {
+      "sym": "Ba",
+      "name": "barium",
+      "poly": false,
+      "z": 56,
+      "group": 2,
+      "charge": 2
+    },
+    {
+      "sym": "Al",
+      "name": "aluminum",
+      "poly": false,
+      "z": 13,
+      "group": 13,
+      "charge": 3
+    },
+    {
+      "sym": "Ga",
+      "name": "gallium",
+      "poly": false,
+      "z": 31,
+      "group": 13,
+      "charge": 3
+    },
+    {
+      "sym": "N",
+      "name": "nitrogen",
+      "poly": false,
+      "z": 7,
+      "group": 15,
+      "charge": -3
+    },
+    {
+      "sym": "P",
+      "name": "phosphorus",
+      "poly": false,
+      "z": 15,
+      "group": 15,
+      "charge": -3
+    },
+    {
+      "sym": "As",
+      "name": "arsenic",
+      "poly": false,
+      "z": 33,
+      "group": 15,
+      "charge": -3
+    },
+    {
+      "sym": "O",
+      "name": "oxygen",
+      "poly": false,
+      "z": 8,
+      "group": 16,
+      "charge": -2
+    },
+    {
+      "sym": "S",
+      "name": "sulfur",
+      "poly": false,
+      "z": 16,
+      "group": 16,
+      "charge": -2
+    },
+    {
+      "sym": "Se",
+      "name": "selenium",
+      "poly": false,
+      "z": 34,
+      "group": 16,
+      "charge": -2
+    },
+    {
+      "sym": "F",
+      "name": "fluorine",
+      "poly": false,
+      "z": 9,
+      "group": 17,
+      "charge": -1
+    },
+    {
+      "sym": "Cl",
+      "name": "chlorine",
+      "poly": false,
+      "z": 17,
+      "group": 17,
+      "charge": -1
+    },
+    {
+      "sym": "Br",
+      "name": "bromine",
+      "poly": false,
+      "z": 35,
+      "group": 17,
+      "charge": -1
+    },
+    {
+      "sym": "I",
+      "name": "iodine",
+      "poly": false,
+      "z": 53,
+      "group": 17,
+      "charge": -1
+    },
+    {
+      "sym": "Ag",
+      "name": "silver",
+      "poly": false,
+      "z": 47,
+      "group": 11,
+      "charge": 1
+    },
+    {
+      "sym": "Zn",
+      "name": "zinc",
+      "poly": false,
+      "z": 30,
+      "group": 12,
+      "charge": 2
+    },
+    {
+      "sym": "Cd",
+      "name": "cadmium",
+      "poly": false,
+      "z": 48,
+      "group": 12,
+      "charge": 2
+    }
+  ],
+  "multivalent": [
+    {
+      "sym": "Fe",
+      "name": "iron",
+      "poly": false,
+      "z": 26,
+      "group": 8,
+      "charges": [
+        2,
+        3
+      ],
+      "stock": [
+        "iron(II)",
+        "iron(III)"
+      ]
+    },
+    {
+      "sym": "Cu",
+      "name": "copper",
+      "poly": false,
+      "z": 29,
+      "group": 11,
+      "charges": [
+        1,
+        2
+      ],
+      "stock": [
+        "copper(I)",
+        "copper(II)"
+      ]
+    },
+    {
+      "sym": "Pb",
+      "name": "lead",
+      "poly": false,
+      "z": 82,
+      "group": 14,
+      "charges": [
+        2,
+        4
+      ],
+      "stock": [
+        "lead(II)",
+        "lead(IV)"
+      ]
+    },
+    {
+      "sym": "Sn",
+      "name": "tin",
+      "poly": false,
+      "z": 50,
+      "group": 14,
+      "charges": [
+        2,
+        4
+      ],
+      "stock": [
+        "tin(II)",
+        "tin(IV)"
+      ]
+    },
+    {
+      "sym": "Hg",
+      "name": "mercury",
+      "poly": false,
+      "z": 80,
+      "group": 12,
+      "charges": [
+        1,
+        2
+      ],
+      "stock": [
+        "mercury(I)",
+        "mercury(II)"
+      ],
+      "derive_charges": [
+        2
+      ],
+      "note": "mercury(I) exists only as the diatomic ion Hg2(2+), not as a lone Hg(+); do not derive compounds from the 1+ entry without special-casing it."
+    },
+    {
+      "sym": "Cr",
+      "name": "chromium",
+      "poly": false,
+      "z": 24,
+      "group": 6,
+      "charges": [
+        2,
+        3
+      ],
+      "stock": [
+        "chromium(II)",
+        "chromium(III)"
+      ]
+    },
+    {
+      "sym": "Mn",
+      "name": "manganese",
+      "poly": false,
+      "z": 25,
+      "group": 7,
+      "charges": [
+        2,
+        3,
+        4
+      ],
+      "stock": [
+        "manganese(II)",
+        "manganese(III)",
+        "manganese(IV)"
+      ]
+    },
+    {
+      "sym": "Co",
+      "name": "cobalt",
+      "poly": false,
+      "z": 27,
+      "group": 9,
+      "charges": [
+        2,
+        3
+      ],
+      "stock": [
+        "cobalt(II)",
+        "cobalt(III)"
+      ]
+    },
+    {
+      "sym": "Ni",
+      "name": "nickel",
+      "poly": false,
+      "z": 28,
+      "group": 10,
+      "charges": [
+        2,
+        3
+      ],
+      "stock": [
+        "nickel(II)",
+        "nickel(III)"
+      ]
+    },
+    {
+      "sym": "Au",
+      "name": "gold",
+      "poly": false,
+      "z": 79,
+      "group": 11,
+      "charges": [
+        1,
+        3
+      ],
+      "stock": [
+        "gold(I)",
+        "gold(III)"
+      ]
+    }
+  ],
+  "polyatomic": [
+    {
+      "sym": "NH4",
+      "name": "ammonium",
+      "poly": true,
+      "charge": 1
+    },
+    {
+      "sym": "H3O",
+      "name": "hydronium",
+      "poly": true,
+      "charge": 1,
+      "derivable": false
+    },
+    {
+      "sym": "Hg2",
+      "name": "mercury(I)",
+      "poly": true,
+      "charge": 2,
+      "note": "mercury(I) is the diatomic dimer Hg2(2+): two mercury atoms bonded to each other, sharing a 2+ charge between them. Each atom is in oxidation state +1, which is why the Stock name is mercury(I) even though the ion itself carries 2+. It is never a lone Hg(+)."
+    },
+    {
+      "sym": "OH",
+      "name": "hydroxide",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "CN",
+      "name": "cyanide",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "O2",
+      "name": "peroxide",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "NO2",
+      "name": "nitrite",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "NO3",
+      "name": "nitrate",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "SO3",
+      "name": "sulfite",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "SO4",
+      "name": "sulfate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "HSO4",
+      "name": "hydrogen sulfate",
+      "poly": true,
+      "charge": -1,
+      "alt_names": [
+        "bisulfate"
+      ]
+    },
+    {
+      "sym": "CO3",
+      "name": "carbonate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "HCO3",
+      "name": "hydrogen carbonate",
+      "poly": true,
+      "charge": -1,
+      "alt_names": [
+        "bicarbonate"
+      ]
+    },
+    {
+      "sym": "C2O4",
+      "name": "oxalate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "C2H3O2",
+      "name": "acetate",
+      "poly": true,
+      "charge": -1,
+      "aliases": [
+        "CH3COO"
+      ]
+    },
+    {
+      "sym": "PO3",
+      "name": "phosphite",
+      "poly": true,
+      "charge": -3
+    },
+    {
+      "sym": "PO4",
+      "name": "phosphate",
+      "poly": true,
+      "charge": -3
+    },
+    {
+      "sym": "HPO4",
+      "name": "hydrogen phosphate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "H2PO4",
+      "name": "dihydrogen phosphate",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "CrO4",
+      "name": "chromate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "Cr2O7",
+      "name": "dichromate",
+      "poly": true,
+      "charge": -2
+    },
+    {
+      "sym": "MnO4",
+      "name": "permanganate",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "ClO",
+      "name": "hypochlorite",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "ClO2",
+      "name": "chlorite",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "ClO3",
+      "name": "chlorate",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "ClO4",
+      "name": "perchlorate",
+      "poly": true,
+      "charge": -1
+    },
+    {
+      "sym": "SCN",
+      "name": "thiocyanate",
+      "poly": true,
+      "charge": -1
+    }
+  ]
+}

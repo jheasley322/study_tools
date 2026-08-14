@@ -1,0 +1,153 @@
+/* ============================================================
+   study_tools — drag surface styles (partner to shared/drag.js)
+   ------------------------------------------------------------
+   Load AFTER tokens.css and BEFORE the app's own styles, so an
+   app can override any of this with a rule of its own:
+
+     <link rel="stylesheet" href="../shared/tokens.css">
+     <link rel="stylesheet" href="../shared/drag.css">
+     <style> ...app styles... </style>
+
+   Every colour here comes from tokens.css. Nothing is redefined
+   and no new token is invented — an app that wants a different
+   hue sets --accent on itself and this file follows.
+
+   The hooks are ATTRIBUTES, not classes: [data-drag] is a
+   draggable, [data-zone] is a drop target. drag.js stamps both
+   attributes onto anything matched by a custom selector, so
+   these rules apply either way.
+
+   State classes added by drag.js:
+     .drag-ghost     the floating clone under the finger
+     .drag-source    the item a live drag came from
+     .drag-selected  an item held in tap / keyboard selection mode
+     .drag-live      a zone that can receive the held item
+     .drag-over      the zone currently under the finger
+   ============================================================ */
+
+/* ---------- draggable items ---------- */
+[data-drag] {
+  /* THE most important line in this file. Without it, mobile Safari
+     decides the gesture is a page scroll before the first
+     pointermove arrives and the drag never starts. It cannot be set
+     from JS inside pointerdown — by then the browser has already
+     committed to scrolling. It has to be here, in CSS, up front. */
+  touch-action: none;
+
+  /* A press of ~0.5s on iOS pops the copy/share/"Add to Photos"
+     callout right on top of the tile the player is dragging. */
+  -webkit-touch-callout: none;
+
+  /* Both spellings: a drag across two tiles otherwise selects the
+     text between them and paints the board blue. */
+  -webkit-user-select: none;
+  user-select: none;
+
+  /* 44x44 is the Apple HIG minimum tap target. Anything smaller is
+     a miss on a phone held one-handed on a bus. */
+  min-width: 44px;
+  min-height: 44px;
+
+  cursor: grab;
+}
+[data-drag]:active { cursor: grabbing; }
+
+/* Focus must be visible — the keyboard path is a first-class way to
+   play. :focus first so browsers without :focus-visible still show
+   something; the :not() rule then hides it for pointer focus in
+   browsers that do. An unknown pseudo-class invalidates only its own
+   rule, which is exactly the fallback we want. */
+[data-drag]:focus,
+[data-zone]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+[data-drag]:focus:not(:focus-visible),
+[data-zone]:focus:not(:focus-visible) { outline: none; }
+[data-drag]:focus-visible,
+[data-zone]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The tile a live drag came from. It stays put; the ghost is what
+   moves. pointer-events:none so that if a zone happens to sit under
+   the source tile, elementFromPoint finds the zone. */
+[data-drag].drag-source {
+  opacity: .3;
+  pointer-events: none;
+}
+
+/* Held by tap or keyboard. The ring is a shape change, not just a
+   colour change, so it still reads without colour vision. */
+[data-drag].drag-selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, .35);
+}
+
+/* ---------- drop zones ---------- */
+[data-zone] {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Something is in hand and this zone can take it. Dashed, so
+   "available" and "under the finger" differ in line style and not
+   only in hue. */
+[data-zone].drag-live {
+  outline: 2px dashed var(--accent);
+  outline-offset: 2px;
+}
+
+/* The finger (or the mouse) is over this zone right now. */
+[data-zone].drag-over {
+  outline: 3px solid var(--phos);
+  outline-offset: 2px;
+  box-shadow: inset 0 0 0 999px rgba(79, 224, 166, .12);
+}
+
+/* ---------- the ghost ---------- */
+.drag-ghost {
+  /* Also set inline by drag.js, deliberately. If the ghost can be
+     hit-tested, document.elementFromPoint returns the ghost instead
+     of the zone beneath it and no drop is ever detected. */
+  pointer-events: none;
+
+  z-index: 9999;
+  opacity: .95;
+  border-radius: var(--r);
+  border: 1px solid var(--accent);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .55);
+  will-change: transform;
+
+  /* Fallbacks only. A default ghost is a clone that keeps its
+     classes, so the app's own tile styling wins over these. */
+  background: var(--panel);
+  color: var(--paper);
+
+  animation: drag-ghost-in .12s ease-out;
+}
+
+/* Opacity only — never transform. drag.js writes transform inline on
+   every pointermove and an animation touching it would fight the
+   finger for control of the ghost. */
+@keyframes drag-ghost-in {
+  from { opacity: 0; }
+  to   { opacity: .95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drag-ghost { animation: none; }
+}
+
+/* ---------- pointer-only affordances ----------
+   Hover does not exist on a touchscreen, so every hover style here
+   is decoration on top of a state that is already communicated by a
+   class. Guarded so a phone never gets a sticky :hover. */
+@media (hover: hover) and (pointer: fine) {
+  [data-drag]:hover { border-color: var(--edge); }
+  [data-zone]:hover { outline: 1px solid var(--edge); outline-offset: 2px; }
+  [data-zone].drag-live:hover { outline: 2px dashed var(--accent); }
+  [data-zone].drag-over:hover { outline: 3px solid var(--phos); }
+}

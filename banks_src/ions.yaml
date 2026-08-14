@@ -1,0 +1,229 @@
+# ions.yaml -- the ion reference bank.
+#
+# Source of truth for every ion the chemistry games hand to Chem.formulaFor().
+# It carries IONS ONLY. No compound is ever written here; compounds are computed
+# at runtime (IMPLEMENTATION_PLAN.md Section 7).
+#
+# Conventions:
+#   - charge is an integer with an explicit sign for anions (-2, never "2-")
+#   - sym is plain ASCII; digits become real <sub> elements in JS (D5)
+#   - names use American high-school textbook spelling (sulfur, aluminum, cesium)
+
+meta:
+  id: ions
+  title: Ion reference
+  subject: Chemistry
+  grade: 10
+  standard: C-PS1-1
+  engine: reference
+  difficulty: 2
+
+config:
+  display: {}
+
+# ---------------------------------------------------------------------------
+# monatomic -- single-atom ions with ONE reliable charge.
+# Noble gases are absent on purpose: they form no monatomic ions.
+# ---------------------------------------------------------------------------
+monatomic:
+  # Group 1 -- alkali metals, 1+
+  - { sym: H,  name: hydrogen,  z: 1,  group: 1,  charge: 1 }
+  - { sym: Li, name: lithium,   z: 3,  group: 1,  charge: 1 }
+  - { sym: Na, name: sodium,    z: 11, group: 1,  charge: 1 }
+  - { sym: K,  name: potassium, z: 19, group: 1,  charge: 1 }
+  - { sym: Rb, name: rubidium,  z: 37, group: 1,  charge: 1 }
+  - { sym: Cs, name: cesium,    z: 55, group: 1,  charge: 1 }
+
+  # Group 2 -- alkaline earth metals, 2+
+  - { sym: Be, name: beryllium, z: 4,  group: 2,  charge: 2 }
+  - { sym: Mg, name: magnesium, z: 12, group: 2,  charge: 2 }
+  - { sym: Ca, name: calcium,   z: 20, group: 2,  charge: 2 }
+  - { sym: Sr, name: strontium, z: 38, group: 2,  charge: 2 }
+  - { sym: Ba, name: barium,    z: 56, group: 2,  charge: 2 }
+
+  # Group 13 -- 3+
+  - { sym: Al, name: aluminum,  z: 13, group: 13, charge: 3 }
+  - { sym: Ga, name: gallium,   z: 31, group: 13, charge: 3 }
+
+  # Group 15 -- nitride / phosphide / arsenide, 3-
+  - { sym: N,  name: nitrogen,   z: 7,  group: 15, charge: -3 }
+  - { sym: P,  name: phosphorus, z: 15, group: 15, charge: -3 }
+  - { sym: As, name: arsenic,    z: 33, group: 15, charge: -3 }
+
+  # Group 16 -- oxide / sulfide / selenide, 2-
+  - { sym: O,  name: oxygen,   z: 8,  group: 16, charge: -2 }
+  - { sym: S,  name: sulfur,   z: 16, group: 16, charge: -2 }
+  - { sym: Se, name: selenium, z: 34, group: 16, charge: -2 }
+
+  # Group 17 -- halides, 1-
+  - { sym: F,  name: fluorine, z: 9,  group: 17, charge: -1 }
+  - { sym: Cl, name: chlorine, z: 17, group: 17, charge: -1 }
+  - { sym: Br, name: bromine,  z: 35, group: 17, charge: -1 }
+  - { sym: I,  name: iodine,   z: 53, group: 17, charge: -1 }
+
+  # Transition / post-transition metals with a single reliable charge.
+  # These take NO Roman numeral in a compound name.
+  - { sym: Ag, name: silver,  z: 47, group: 11, charge: 1 }
+  - { sym: Zn, name: zinc,    z: 30, group: 12, charge: 2 }
+  - { sym: Cd, name: cadmium, z: 48, group: 12, charge: 2 }
+
+# ---------------------------------------------------------------------------
+# multivalent -- metals with more than one common charge. Cascade "wilds".
+# `stock` is index-aligned with `charges`: stock[i] names charges[i].
+# These are exactly the metals whose compound names REQUIRE a Roman numeral.
+# ---------------------------------------------------------------------------
+multivalent:
+  - sym: Fe
+    name: iron
+    z: 26
+    group: 8
+    charges: [2, 3]
+    stock: ["iron(II)", "iron(III)"]
+
+  - sym: Cu
+    name: copper
+    z: 29
+    group: 11
+    charges: [1, 2]
+    stock: ["copper(I)", "copper(II)"]
+
+  - sym: Pb
+    name: lead
+    z: 82
+    group: 14
+    charges: [2, 4]
+    stock: ["lead(II)", "lead(IV)"]
+
+  - sym: Sn
+    name: tin
+    z: 50
+    group: 14
+    charges: [2, 4]
+    stock: ["tin(II)", "tin(IV)"]
+
+  # The 1+ mercury ion is really the diatomic dimer Hg2(2+): two mercury atoms
+  # bonded to each other sharing a 2+ charge, so each atom is oxidation state
+  # +1 and the Stock name is still mercury(I).
+  # DERIVATION HAZARD: treating it as a lone Hg(+) breaks against 1- anions.
+  # mercury(I) chloride is Hg2Cl2, but Hg(+) + Cl(-) reduces to HgCl. Against a
+  # 2- anion it happens to come out right (Hg2O). Do not put the 1+ mercury
+  # entry into a compound-building game without special-casing the dimer.
+  - sym: Hg
+    name: mercury
+    z: 80
+    group: 12
+    charges: [1, 2]
+    stock: ["mercury(I)", "mercury(II)"]
+    # Both charges are real and Cascade legitimately teaches both -- it only
+    # asks what charge an element forms, it never builds a compound. But only
+    # charge 2 may be handed to formulaFor as a monatomic Hg; the 1+ case is
+    # the polyatomic Hg2 entry instead.
+    derive_charges: [2]
+    note: >-
+      mercury(I) exists only as the diatomic ion Hg2(2+), not as a lone Hg(+);
+      do not derive compounds from the 1+ entry without special-casing it.
+
+  - sym: Cr
+    name: chromium
+    z: 24
+    group: 6
+    charges: [2, 3]
+    stock: ["chromium(II)", "chromium(III)"]
+
+  - sym: Mn
+    name: manganese
+    z: 25
+    group: 7
+    charges: [2, 3, 4]
+    stock: ["manganese(II)", "manganese(III)", "manganese(IV)"]
+
+  - sym: Co
+    name: cobalt
+    z: 27
+    group: 9
+    charges: [2, 3]
+    stock: ["cobalt(II)", "cobalt(III)"]
+
+  - sym: Ni
+    name: nickel
+    z: 28
+    group: 10
+    charges: [2, 3]
+    stock: ["nickel(II)", "nickel(III)"]
+
+  - sym: Au
+    name: gold
+    z: 79
+    group: 11
+    charges: [1, 3]
+    stock: ["gold(I)", "gold(III)"]
+
+# ---------------------------------------------------------------------------
+# polyatomic -- charged groups of atoms that travel together.
+# Within an -ite / -ate pair the -ate form carries one MORE oxygen at the
+# same charge; hypo- drops one below -ite, per- adds one above -ate.
+# ---------------------------------------------------------------------------
+polyatomic:
+  # Cations
+  - { sym: NH4, name: ammonium,  charge: 1 }
+  # Reference and recognition only -- never fed to formulaFor. Deriving from it
+  # gives rows like H3O(1+) + Cl(1-) -> H3OCl: arithmetically perfect, chemically
+  # nonsense. Hydronium chloride is just HCl dissolved in water.
+  - { sym: H3O, name: hydronium, charge: 1, derivable: false }
+  # The real mercury(I) ion: two mercury atoms bonded to each other sharing a
+  # 2+ charge. It belongs here, not in monatomic -- it genuinely IS polyatomic,
+  # so formulaFor handles it with no special case (Hg2 + Cl -> Hg2Cl2).
+  # The `note` below repeats this because comments do not survive compilation,
+  # and a reference view would otherwise show "mercury(I) 2+" beside
+  # "mercury(II) 2+" with nothing to tell them apart.
+  - sym: Hg2
+    name: "mercury(I)"
+    charge: 2
+    note: >-
+      mercury(I) is the diatomic dimer Hg2(2+): two mercury atoms bonded to
+      each other, sharing a 2+ charge between them. Each atom is in oxidation
+      state +1, which is why the Stock name is mercury(I) even though the ion
+      itself carries 2+. It is never a lone Hg(+).
+
+  # Hydroxide, cyanide, peroxide
+  - { sym: OH, name: hydroxide, charge: -1 }
+  - { sym: CN, name: cyanide,   charge: -1 }
+  - { sym: O2, name: peroxide,  charge: -2 }
+
+  # Nitrogen oxyanions
+  - { sym: NO2, name: nitrite, charge: -1 }
+  - { sym: NO3, name: nitrate, charge: -1 }
+
+  # Sulfur oxyanions
+  - { sym: SO3,  name: sulfite,          charge: -2 }
+  - { sym: SO4,  name: sulfate,          charge: -2 }
+  # `alt_names` is an accepted alternate NAME. Distinct from `aliases`, which
+  # per D3 is an accepted alternate FORMULA notation.
+  - { sym: HSO4, name: hydrogen sulfate, charge: -1, alt_names: [bisulfate] }
+
+  # Carbon oxyanions
+  - { sym: CO3,    name: carbonate,          charge: -2 }
+  - { sym: HCO3,   name: hydrogen carbonate, charge: -1, alt_names: [bicarbonate] }
+  - { sym: C2O4,   name: oxalate,            charge: -2 }
+  # D3: both notations are accepted on input, display is always C2H3O2.
+  - { sym: C2H3O2, name: acetate,            charge: -1, aliases: [CH3COO] }
+
+  # Phosphorus oxyanions
+  - { sym: PO3,   name: phosphite,             charge: -3 }
+  - { sym: PO4,   name: phosphate,             charge: -3 }
+  - { sym: HPO4,  name: hydrogen phosphate,    charge: -2 }
+  - { sym: H2PO4, name: dihydrogen phosphate,  charge: -1 }
+
+  # Chromium and manganese oxyanions
+  - { sym: CrO4,  name: chromate,    charge: -2 }
+  - { sym: Cr2O7, name: dichromate,  charge: -2 }
+  - { sym: MnO4,  name: permanganate, charge: -1 }
+
+  # Chlorine oxyanion series -- the full hypo-/-ite/-ate/per- ladder
+  - { sym: ClO,  name: hypochlorite, charge: -1 }
+  - { sym: ClO2, name: chlorite,     charge: -1 }
+  - { sym: ClO3, name: chlorate,     charge: -1 }
+  - { sym: ClO4, name: perchlorate,  charge: -1 }
+
+  # Sulfur-for-oxygen substitution
+  - { sym: SCN, name: thiocyanate, charge: -1 }

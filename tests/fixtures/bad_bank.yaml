@@ -1,0 +1,51 @@
+# bad_bank.yaml -- a deliberately malformed bank. build_banks.py MUST reject it.
+#
+# Gate 0 requires proof that the compiler rejects a bad bank, not just that it
+# accepts a good one. This file is fed to the compiler by explicit path:
+#
+#     python3 build_banks.py tests/fixtures/bad_bank.yaml     -> exits 1
+#
+# A normal run compiles banks_src/*.yaml only and never sees this file.
+#
+# It is valid YAML on purpose. A parse error would stop the compiler after one
+# finding, and the point here is that EVERY finding is reported in one pass.
+#
+# Violations planted below, one per line of the expected output:
+#   1. meta.title            missing entirely (one of the seven required keys)
+#   2. meta.id               "totally-not-bad-bank" != filename stem "bad_bank"
+#   3. meta.engine           "trebuchet" is not cascade|matrix|reference
+#   4. meta.difficulty       9 is outside 1-5
+#   5. config...formula      hardcoded answer -- the Section 7 leak check
+#   6. config...answer       a second leak, under a different key
+#   7. ions[0].sym           "na2" does not match ^[A-Z][A-Za-z0-9]*$
+#   8. ions[1].name          empty
+#   9. ions[1].charge        0 is not a charge
+#  10. ions[2]               neither `charge` nor `charges`
+#  11. ions[3].charges       list contains a non-integer
+#  12. ions[3].stock         2 entries against 3 charges -- not index-aligned
+
+meta:
+  id: totally-not-bad-bank
+  subject: Chemistry
+  grade: 10
+  standard: TBD-VERIFY
+  engine: trebuchet
+  difficulty: 9
+
+config:
+  pairs:
+    - cation: Na
+      anion: Cl
+      formula: NaCl
+    - cation: Mg
+      anion: OH
+      answer: Mg(OH)2
+
+ions:
+  - { sym: na2, name: bogus,    charge: 1 }
+  - { sym: Xx,  name: "",       charge: 0 }
+  - { sym: Yy,  name: yttrium-ish }
+  - sym: Zz
+    name: zirconium-ish
+    charges: [2, "three", 4]
+    stock: ["zz(II)", "zz(IV)"]
