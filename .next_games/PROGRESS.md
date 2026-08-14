@@ -21,12 +21,16 @@ confirming re-audit. See "First thing to do on resume".
 | Item | Status | Evidence (run by the orchestrator, not reported by an agent) |
 |---|---|---|
 | All property tests pass | ✅ | `npm test` → **55 passed, 0 failed** |
-| Exhaustive derivation check, zero errors | ⏳ | `chem-verifier` PASS on iteration 1: **1326/1326 rows re-derived independently in Python**, zero mismatches. Iteration 2 confirming the delta to 1292 rows was in flight at session end. |
+| Exhaustive derivation check, zero errors | ✅ | `chem-verifier` **PASS, L2 iteration 2, zero required fixes.** All 1292 rows re-derived independently in Python (twice — 1326 at iteration 1, 1292 at iteration 2), zero mismatches |
 | `build_banks.py` rejects a malformed bank | ✅ | `python3 build_banks.py tests/fixtures/bad_bank.yaml` → **exit 1, 12 findings, nothing written**; `ions.json` sha1 unchanged |
 
-Iteration 1 audited a 1326-row dump and a bank that have both since changed (H3O
-excluded, `Hg2` note added). The confirming pass exists so the PASS carries forward to
-the artifacts that actually ship. **Do not declare Gate 0 green without it.**
+**GATE 0 IS CLOSED.** L2 exited at iteration 2 of 3, at zero errors, never suppressed.
+
+The auditor proved the 1326→1292 delta rather than inferring it: `derived.txt` is
+untracked so there is no git history to diff, so it reconstructed both inventories from
+the bank (ignoring `derivable` → 1326; honoring it → 1292; suppressed entries exactly
+`[H3O]`). The 1326 reconstruction reproduced its iteration-1 inventory bit for bit,
+which is what makes the carry-forward airtight.
 
 ---
 
@@ -113,8 +117,19 @@ semantic. That is the argument for `chem-verifier` being a separate read-only ag
 
 ## Open items
 
-**Required before Gate 0 closes**
-- `chem-verifier` L2 iteration 2 verdict (in flight at session end).
+**Required at Gate 2 — recorded before the Matrix banks exist**
+- **Formula-string collisions.** `MnO2`, `PbO2`, `SnO2` are each produced by two
+  different ion pairs (metal 4+ + oxide, and metal 2+ + peroxide). A validator
+  comparing output *strings* will mark the wrong tiles correct. Either keep peroxide
+  out of any tier offering a 4+ metal, or compare the **ion pair**. See `CONTRACT.md`
+  §10 — and note `PbO2` is externally corroborated ("lead peroxide" is a real PubChem
+  synonym for lead(IV) oxide), so a student who searches it gets confirmation of the
+  wrong answer.
+
+**Required at Gate 1 or 3**
+- The reference view must actually **render `note`**. A note that compiles but is never
+  displayed does not help her — the `Hg2` fix is only half-delivered until something
+  shows it.
 
 **Landed and verified at session end** (both re-run by the orchestrator)
 - Task #17 — `no_ion` cross-bank check. Verified: a bank listing `Na` in `no_ion` is
@@ -153,9 +168,10 @@ semantic. That is the argument for `chem-verifier` being a separate read-only ag
 
 ## First thing to do on resume
 
-1. Check `chem-verifier`'s iteration-2 verdict. If PASS with zero required fixes,
-   **Gate 0 closes**. If not, run L2 iteration 3 — and if a required fix survives
-   iteration 3, stop and report rather than shipping.
+1. **Gate 0 is already closed** — re-run `npm test` (expect 55/55) and
+   `python3 build_banks.py tests/fixtures/bad_bank.yaml` (expect exit 1) to confirm
+   nothing rotted, then go straight to Phase 1. No further chemistry audit is owed at
+   this gate.
 2. `drag.js` has **never run in a browser.** Before or alongside the Cascade build,
    exercise it on a served page at 390px: all three commit paths (drag, tap, keyboard),
    `pointercancel` mid-drag leaving no orphan ghost, and the prune actually bounding
@@ -176,12 +192,14 @@ read .next_games/PROGRESS.md first for state, then .next_games/CONTRACT.md
 (the pinned interfaces, especially §9 Cascade and §10 Matrix pool constraints)
 and .next_games/IMPLEMENTATION_PLAN.md (authority; §0 locked decisions).
 
-Before dispatching anything: confirm Gate 0 is actually green. Check
-chem-verifier's L2 iteration-2 verdict, run `npm test` and
-`python3 build_banks.py tests/fixtures/bad_bank.yaml` yourself, and verify the
-two in-flight fixes landed (task #17 no_ion cross-check; the drag.js
-owned/marks prune). Do not take an agent report on trust — every green in
-PROGRESS.md was re-run by the orchestrator, and that standard holds.
+Gate 0 is CLOSED (chem-verifier PASS, L2 iteration 2, zero required fixes).
+Re-run `npm test` (55/55) and `python3 build_banks.py
+tests/fixtures/bad_bank.yaml` (exit 1) to confirm nothing rotted, then
+proceed. Do not take an agent report on trust — every green in PROGRESS.md
+was re-run by the orchestrator, and that standard holds.
+
+Note shared/drag.js has never run in a browser; exercise it before or
+alongside the Cascade build. It is the least-verified file in the repo.
 
 Then build Charge Cascade to CONTRACT §9, gate it against Gate 1, and continue
 through Phases 2 and 3. Same rules: auditors are read-only and never patch

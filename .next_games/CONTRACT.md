@@ -438,7 +438,37 @@ which ions the **Matrix tier banks may draw from**, recorded before those banks 
 
 **`H3O` is excluded everywhere** via `derivable: false` (§5) — already closed.
 
-Note what these two have in common with mercury: no mechanical check can catch them.
+### Formula-string collisions — REQUIRED at Gate 2
+
+Three formula strings are each produced by **two different ion pairs**:
+
+```
+MnO2  ⇐  Mn⁴⁺ + O²⁻   AND   Mn²⁺ + O2²⁻
+PbO2  ⇐  Pb⁴⁺ + O²⁻   AND   Pb²⁺ + O2²⁻
+SnO2  ⇐  Sn⁴⁺ + O²⁻   AND   Sn²⁺ + O2²⁻
+```
+
+metal(4+) + oxide and metal(2+) + peroxide produce an identical string. Both
+derivations are correct; `chem.js` is not at fault and neither row is wrong.
+
+**Why it breaks Matrix:** a validator comparing formula *strings* cannot tell them
+apart. Ask her to build the compound from `Mn⁴⁺` and `O²⁻`, and assembling the *wrong*
+tiles — `Mn²⁺` plus a peroxide tile — produces a string that validates as correct. Run
+it the other way, show `MnO2` and ask her to name it, and there are two defensible
+answers. In all three cases the 4+ oxide reading is the real compound and the peroxide
+reading is spurious.
+
+`PbO2` is the worst of the three: *"lead peroxide"* is a registered PubChem synonym for
+lead(IV) oxide — an archaic trivial name that survived. A student who searches it lands
+on `PbO2` and concludes `Pb²⁺ + O2²⁻` was right, when the compound contains no peroxide
+ion at all. **The wrong answer is externally corroborated**, which is the hardest kind
+to talk a student out of.
+
+**Fix, required before Matrix ships:** either keep peroxide out of any tier that also
+offers a 4+ metal, or have the validator compare the **ion pair**, never the output
+string.
+
+Note what these three have in common with mercury: no mechanical check can catch them.
 The compiler can guarantee `derivable: false` *means* what it says; it cannot know
 which ions *should* carry it. That judgment is chemistry, and it belongs to
 `chem-verifier` — which is exactly why the auditor is a separate agent that writes no
